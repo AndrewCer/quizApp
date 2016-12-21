@@ -1,0 +1,23 @@
+h1 {
+  font-family: 'Chewy', cursive;
+}
+p {
+  font-family: 'Luckiest Guy', cursive;
+  font-size: 30px;
+}
+#questions > div {
+  margin-bottom: 1%;
+}
+.caption {
+  position: absolute;
+  top: 35%;
+  left: 0;
+  width: 100%;
+}
+.jumbotron {
+  background-color: #fff;
+}
+/*.animate-card .jumbotron {
+  padding-top: 0px;
+  padding-bottom: 0px;
+}*/

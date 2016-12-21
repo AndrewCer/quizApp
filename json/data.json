@@ -1,0 +1,258 @@
+[
+  {
+    "questions": [
+      {
+        "question": "In what year was Sega Genesis released in North America?",
+        "answers": [
+          {
+            "answer": "1999",
+            "score": 0
+          },
+          {
+            "answer": "1989",
+            "score": 1
+          },
+          {
+            "answer": "1975",
+            "score": 0
+          },
+          {
+            "answer": "1991",
+            "score": 0
+          }
+        ]
+      },
+      {
+        "question": "Which of the following video games takes place in a dystopian underwater city called Rapture?",
+        "answers": [
+          {
+            "answer": "Half-Life",
+            "score": 0
+          },
+          {
+            "answer": "God Of War",
+            "score": 0
+          },
+          {
+            "answer": "Fallout 3",
+            "score": 0
+          },
+          {
+            "answer": "Bioshock",
+            "score": 1
+          }
+        ]
+      },
+      {
+        "question": "What Nintendo system was released after the N64 and before the Wii?",
+        "answers": [
+          {
+            "answer": "Gamecube",
+            "score": 1
+          },
+          {
+            "answer": "Nintendo 128",
+            "score": 0
+          },
+          {
+            "answer": "Virtual Boy",
+            "score": 0
+          },
+          {
+            "answer": "Super Nintendo",
+            "score": 0
+          }
+        ]
+      },
+      {
+        "question": "Honda, Dhalsim and Chun Li are all characters from what video game series?",
+        "answers": [
+          {
+            "answer": "Teenage Mutant Ninja Turtles",
+            "score": 0
+          },
+          {
+            "answer": "Street Fighter",
+            "score": 1
+          },
+          {
+            "answer": "Battletoads",
+            "score": 0
+          },
+          {
+            "answer": "Mortal Kombat",
+            "score": 0
+          }
+        ]
+      },
+      {
+        "question": "What color is the ring of death on an XBOX that signifies a hardware failure?",
+        "answers": [
+          {
+            "answer": "Blue",
+            "score": 0
+          },
+          {
+            "answer": "Yellow",
+            "score": 0
+          },
+          {
+            "answer": "Green",
+            "score": 0
+          },
+          {
+            "answer": "Red",
+            "score": 1
+          }
+        ]
+      },
+      {
+        "question": "What classic beat-&quot;em-up game featured brothers Billy Lee and Jimmy (also nicknamed Spike and Hammer)?",
+        "answers": [
+          {
+            "answer": "Smash Brothers",
+            "score": 0
+          },
+          {
+            "answer": "Ninja Gaiden",
+            "score": 0
+          },
+          {
+            "answer": "Double Dragon",
+            "score": 1
+          },
+          {
+            "answer": "Snow Brothers",
+            "score": 0
+          }
+        ]
+      },
+      {
+        "question": "How many bits was the Super Nintendo Entertainment System (<abbr title=\"World Health Organization\">NES</abbr>)?",
+        "answers": [
+          {
+            "answer": "8",
+            "score": 0
+          },
+          {
+            "answer": "128",
+            "score": 0
+          },
+          {
+            "answer": "64",
+            "score": 0
+          },
+          {
+            "answer": "16",
+            "score": 1
+          }
+        ]
+      },
+      {
+        "question": "What character do you play as in The Legend Of Zelda?",
+        "answers": [
+          {
+            "answer": "Gandolf",
+            "score": 0
+          },
+          {
+            "answer": "Chimmy",
+            "score": 0
+          },
+          {
+            "answer": "Peter",
+            "score": 0
+          },
+          {
+            "answer": "Link",
+            "score": 1
+          }
+        ]
+      },
+      {
+        "question": "What 64-bit Sega system was a predecessor to the PlayStation and Nintendo 64?",
+        "answers": [
+          {
+            "answer": "Dreamcast",
+            "score": 0
+          },
+          {
+            "answer": "Commodore 128",
+            "score": 0
+          },
+          {
+            "answer": "Saturn",
+            "score": 1
+          },
+          {
+            "answer": "3DO",
+            "score": 0
+          }
+        ]
+      },
+      {
+        "question": "The game Grand Theft Auto was released primarily for what gaming system?",
+        "answers": [
+          {
+            "answer": "<abbr title=\"World Health Organization\">NES</abbr>",
+            "score": 0
+          },
+          {
+            "answer": "XBOX",
+            "score": 0
+          },
+          {
+            "answer": "Dreamcast",
+            "score": 0
+          },
+          {
+            "answer": "PlayStation",
+            "score": 1
+          }
+        ]
+      },
+      {
+        "question": "Which James Bond film was made into a game for the Nintendo 64 console and later for the Wii console?",
+        "answers": [
+          {
+            "answer": "Goldfinger",
+            "score": 0
+          },
+          {
+            "answer": "Goldeneye",
+            "score": 1
+          },
+          {
+            "answer": "Thunderball",
+            "score": 0
+          },
+          {
+            "answer": "Moonraker",
+            "score": 0
+          }
+        ]
+      },
+      {
+        "question": "Which popular video game features an ex-Special Forces operator named Jack Carver, who is stranded in Micronesia.",
+        "answers": [
+          {
+            "answer": "Far Cry",
+            "score": 1
+          },
+          {
+            "answer": "Halo 2",
+            "score": 0
+          },
+          {
+            "answer": "Left 4 Dead",
+            "score": 0
+          },
+          {
+            "answer": "Max Payne",
+            "score": 0
+          }
+        ]
+      }
+    ]
+  }
+]
