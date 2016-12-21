@@ -4,8 +4,10 @@ var bounceInfinite = "animated infinite bounce";
 var fadeOutDown = "animated fadeOutDown";
 var bounceOut = "animated bounceOut";
 var bounceIn = "animated bounceIn";
+var zoomInDown = "animated zoomInDown";
+var rollOut = "animated rollOut";
 //game variables
-var questions = [];
+var questions = null;
 var answeredQuestions = [];
 var score = 0;
 var user = function () {
@@ -54,7 +56,7 @@ function animateIn() {
 //#region New User
 function newUserState() {
   $.get("/templates/welcome.html", function (data) {
-      $('#main-content').empty().append(data);
+      $("#main-content").empty().append(data);
       animateIn();
       $(".bouncer").hover(function (e) {
         $(e.target).addClass(bounceInfinite);
@@ -84,49 +86,83 @@ function newUserState() {
 }
 //#endregion
 
+//#region Main game
+
+function buildCardView(data, newGame) {
+  $.get("/templates/game.html", function(template) {
+    var selected = null;
+    $("#main-content").empty().append(template);
+    // TODO: flesh out with animateIn isn't working
+    // if (newGame) animateIn();
+    $("#question").html(data.question);
+    data.answers.forEach(function (q) {
+      $("#questions").append('<div class="card text-center col-md-6 col-md-offset-3" role="button"><img class="img-responsive" src="assets/answer-unselected.png" alt="answer not selected background"><div class="caption"><p>' + q.answer + '</p></div></div>');
+    })
+    // TODO: flesh out logic for hover. As it tends to selects different elements depending on where mouse is
+    // $(".card").hover(function (e) {
+    //   $(e.target).attr("src", "/assets/answer-selected.png");
+    // }, function (e) {
+    //   if (!selected) $(e.target).attr("src", "/assets/answer-unselected.png");
+    // });
+    $(".card").on("click", function (e) {
+      $(".card").css("pointer-events", "none");
+      selected = $(".card").index(this);
+      data.answered = data.answers[selected];
+      answeredQuestions.push(data);
+      questions.splice(0, 1);
+      if (data.answered.score) {
+        console.log('correct');
+        score += data.answered.score;
+        console.log(data.answered);
+        $(".overlay").children().attr("src", "/assets/correct-tilt.png");
+        $(".overlay").css("display", "block").addClass(zoomInDown).one("animationend", function () {
+          // TODO: animate-card slide out
+          // TODO: $('#main-content').empty() and then run code again
+          $(".animate-card").addClass(rollOut).one("animationend", function () {
+            setCardState();
+          });
+        });
+
+      }
+      else {
+        console.log("incorrect");
+        $(".overlay").children().attr("src", "/assets/incorrect-tilt.png")
+        $(".overlay").css("display", "block").addClass(zoomInDown).one("animationend", function () {
+          // TODO: animate-card slide out
+          // TODO: $('#main-content').empty() and then run code again
+          $(".animate-card").addClass(rollOut).one("animationend", function () {
+            setCardState();
+          });
+        });
+      }
+      // TODO: animate card out and bring in new card with animation
+
+      // $(e.target).attr("src", "/assets/answer-selected.png");
+    });
+  })
+}
+
 function setCardState() {
 
-    $.get("/templates/game.html", function(template) {
-      readTextFile("/json/data.json", function(text){
-          questions = JSON.parse(text)[0].questions;
-          questions.shuffleArray();
-          // console.log(questions);
-          var data = questions[0];
-          var selected = null;
-          $("#main-content").empty().append(template);
-          $("#question").html(data.question);
-          data.answers.forEach(function (q) {
-            $("#questions").append('<div class="card text-center col-md-6 col-md-offset-3" role="button"><img class="img-responsive" src="assets/answer-unselected.png" alt="answer not selected background"><div class="caption"><p>' + q.answer + '</p></div></div>');
-          })
-          // TODO: flesh out logic for hover. As it tends to selects different elements depending on where mouse is
-          // $(".card").hover(function (e) {
-          //   $(e.target).attr("src", "/assets/answer-selected.png");
-          // }, function (e) {
-          //   if (!selected) $(e.target).attr("src", "/assets/answer-unselected.png");
-          // });
-          $(".card").on("click", function (e) {
-            selected = $('.card').index(this);
-            data.answered = data.answers[selected];
-            answeredQuestions.push(data);
-            questions.splice(0, 1);
-            if (data.answered.score) {
-              // TODO: display CORRECT text
-              score += data.answered.score;
-              console.log(data.answered);
-            }
-            else {
-              // TODO: display INCORRECT text
-            }
-            // TODO: animate card out and bring in new card with animation
-
-            // $(e.target).attr("src", "/assets/answer-selected.png");
-          })
-          animateIn();
-      });
-    });
+  if (!questions) {
+    readTextFile("/json/data.json", function (text) {
+      questions = JSON.parse(text)[0].questions;
+      questions.shuffleArray();
+      buildCardView(questions[0], true);
+    })
+  }
+  else if (questions.length > 0){
+    console.log(questions[0]);
+    console.log(questions.length);
+    buildCardView(questions[0]);
+  } else {
+    // TODO: setup game over screen function
+    console.log('its empty');
+  }
 
 
 }
+//#endregion
 
 $(function() {
 

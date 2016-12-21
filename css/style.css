@@ -17,6 +17,11 @@ p {
 .jumbotron {
   background-color: #fff;
 }
+.overlay {
+  position: absolute;
+  z-index: 1;
+  display: none;
+}
 /*.animate-card .jumbotron {
   padding-top: 0px;
   padding-bottom: 0px;
