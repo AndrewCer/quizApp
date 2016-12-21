@@ -116,10 +116,11 @@ function buildCardView(data, newGame) {
         console.log(data.answered);
         $(".overlay").children().attr("src", "/assets/correct-tilt.png");
         $(".overlay").css("display", "block").addClass(zoomInDown).one("animationend", function () {
-          // TODO: animate-card slide out
-          // TODO: $('#main-content').empty() and then run code again
-          $(".animate-card").addClass(rollOut).one("animationend", function () {
-            setCardState();
+          $(".animate-in-out").addClass(rollOut).one("animationend", function () {
+            setTimeout(function () {
+              $('#main-content').empty();
+              setCardState();
+            }, 1000);
           });
         });
 
@@ -130,8 +131,11 @@ function buildCardView(data, newGame) {
         $(".overlay").css("display", "block").addClass(zoomInDown).one("animationend", function () {
           // TODO: animate-card slide out
           // TODO: $('#main-content').empty() and then run code again
-          $(".animate-card").addClass(rollOut).one("animationend", function () {
-            setCardState();
+          $(".animate-in-out").addClass(rollOut).one("animationend", function () {
+            setTimeout(function () {
+              $('#main-content').empty();
+              setCardState();
+            }, 1000);
           });
         });
       }
