@@ -67,6 +67,7 @@ function clearUserState() {
   currentUser.currentScore = 0;
   currentUser.questions = [];
   currentUser.answeredQuestions = [];
+  currentUser.inProgress = false;
 }
 //#endregion
 
@@ -126,9 +127,10 @@ function prevUserState() {
     if (currentUser.name) $("#user-name").removeClass("hidden");
     if (currentUser.questions.length) {
       $("#resume-game").removeClass("hidden");
-      // resumeDiv.child().on("click", function () {
-        // console.log('child clicked!!');
-      // })
+      // TODO: narrow this click down to just the button;
+      $("#resume-game").on("click", function () {
+        setCardState();
+      })
     }
     if (!currentUser.inProgress) {
       $("#recap").removeClass("hidden");
@@ -173,8 +175,8 @@ function buildCardView(data, newGame) {
       data.answers.forEach(function (a, i) {
         if (a.score === 1) data.answered.correctIndex = i;
       })
-      answeredQuestions.push(data);
-      questions.splice(0, 1);
+      currentUser.answeredQuestions.push(data);
+      currentUser.questions.splice(0, 1);
       var overlay = $(".overlay");
       if (data.answered.score) {
         currentUser.currentScore += data.answered.score;
@@ -201,8 +203,8 @@ function buildCardView(data, newGame) {
           });
         });
       }
-      currentUser.questions = questions;
-      currentUser.answeredQuestions = answeredQuestions;
+      // currentUser.questions = questions;
+      // currentUser.answeredQuestions = answeredQuestions;
       updateStorage();
 
     });
@@ -210,17 +212,16 @@ function buildCardView(data, newGame) {
 }
 
 function setCardState() {
-
-  if (!questions) {
+  console.log(currentUser);
+  if (currentUser.questions.length === 0 && currentUser.inProgress === false) {
     readTextFile("/json/data.json", function (text) {
-      questions = JSON.parse(text)[0].questions;
-      questions.shuffleArray();
-      buildCardView(questions[0], true);
+      currentUser.questions = JSON.parse(text)[0].questions;
+      currentUser.questions.shuffleArray();
+      buildCardView(currentUser.questions[0], true);
     })
   }
-  else if (questions.length > 0){
-    console.log(questions.length);
-    buildCardView(questions[0]);
+  else if (currentUser.questions.length > 0){
+    buildCardView(currentUser.questions[0]);
   } else {
     setGameOver()
   }
@@ -236,15 +237,14 @@ function setGameOver() {
     currentUser.inProgress = false;
     if (!currentUser.highScore || currentUser.highScore < currentUser.currentScore) currentUser.highScore = currentUser.currentScore;
     updateStorage();
-    $(".score").append('<p> Current: ' + currentUser.currentScore + "/" + answeredQuestions.length + '</p>');
-    $(".score").append('<p> Best: ' + currentUser.highScore + "/" + answeredQuestions.length + '</p>');
+    $(".score").append('<p> Current: ' + currentUser.currentScore + "/" + currentUser.answeredQuestions.length + '</p>');
+    $(".score").append('<p> Best: ' + currentUser.highScore + "/" + currentUser.answeredQuestions.length + '</p>');
     $(".avatar").attr("src", currentUser.avatar);
     if (!currentUser.name) {
       $(".no-name").removeClass("hidden");
       // TODO: hide current user name black
     }
-    console.log(answeredQuestions);
-    answeredQuestions.forEach(function (card, i) {
+    currentUser.answeredQuestions.forEach(function (card, i) {
       $("#recap").append('<div class="row"><div id="card-'+ i +'" class="col-md-8 col-md-offset-2 separator"></div></div>')
       $("#card-" + i).append('<h1>' + card.question + '</h1>')
       card.answers.forEach(function (q, qIndex) {
