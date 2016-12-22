@@ -9,14 +9,19 @@ var zoomOut = "animated zoomOut";
 //game variables
 var questions = null;
 var answeredQuestions = [];
-var score = 0;
-var user = function () {
+var currentUser;
+var User = function () {
   // this.id = "00000000-0000-0000-0000-000000000000" //implement later if backend is integrated
   // this.name = "";
-  this.avatar = avatar;
-  this.hiScore = null;
+  this.name = null;
+  this.avatar = null;
+  this.highScore = null;
   this.lowScore = null;
+  this.inProgress = false;
   this.speed = null;
+  this.currentScore = 0;
+  this.questions = [];
+  this.answeredQuestions = [];
 }
 
 //#region Helper Functions
@@ -53,6 +58,10 @@ Array.prototype.shuffleArray = function() {
 function animateIn() {
   $(".animate-in-out").addClass(bounceIn);
 }
+
+function updateStorage() {
+  localStorage.setItem("appUser", JSON.stringify(currentUser));
+}
 //#endregion
 
 
@@ -68,7 +77,11 @@ function newUserState() {
         $(e.target).removeClass(bounceInfinite);
       });
       $(".bouncer").on("click", function (e) {
+        currentUser = new User();
         var target = $(e.target);
+        var imgSource = target.prop('src').split("/");
+        currentUser.avatar = imgSource[imgSource.length - 2] + "/" + imgSource[imgSource.length - 1];
+        // TODO: perhaps remove below closestChild code
         var closestChild = target.closest("div").siblings().find("img");
         target.removeClass(bounceInfinite);
         // closestChild.addClass(fadeOutDown);
@@ -87,6 +100,19 @@ function newUserState() {
   })
 
 
+}
+//#endregion
+
+//#region Previous User State
+function prevUserState() {
+  currentUser = JSON.parse(localStorage.getItem("appUser"));
+  // TODO: check for currentUser.inProgress to see if the game is in progress and show "Continue" button
+  console.log(currentUser);
+  $.get("/templates/home.html", function (template) {
+    $("#main-content").empty().append(template);
+    animateIn();
+
+  })
 }
 //#endregion
 
@@ -109,6 +135,7 @@ function buildCardView(data, newGame) {
     //   if (!selected) $(e.target).attr("src", "/assets/answer-unselected.png");
     // });
     $(".card").on("click", function (e) {
+      currentUser.inProgress = true;
       $(".card").css("pointer-events", "none");
       selected = $(".card").index(this);
       data.answered = data.answers[selected];
@@ -121,7 +148,8 @@ function buildCardView(data, newGame) {
       questions.splice(0, 1);
       var overlay = $(".overlay");
       if (data.answered.score) {
-        score += data.answered.score;
+        currentUser.currentScore += data.answered.score;
+
         overlay.children().attr("src", "/assets/correct-tilt.png");
         overlay.css("display", "block").addClass(zoomInDown).one("animationend", function () {
           $(".animate-in-out").addClass(rollOut).one("animationend", function () {
@@ -136,8 +164,6 @@ function buildCardView(data, newGame) {
       else {
         overlay.children().attr("src", "/assets/incorrect-tilt.png")
         overlay.css("display", "block").addClass(zoomInDown).one("animationend", function () {
-          // TODO: $('#main-content').empty() and then run code again
-          // $(".animate-in-out").addClass(rollOut).one("animationend", function () {
           $(".animate-in-out").addClass(zoomOut).one("animationend", function () {
             setTimeout(function () {
               $('#main-content').empty();
@@ -146,9 +172,10 @@ function buildCardView(data, newGame) {
           });
         });
       }
-      // TODO: animate card out and bring in new card with animation
+      currentUser.questions = questions;
+      currentUser.answeredQuestions = answeredQuestions;
+      updateStorage();
 
-      // $(e.target).attr("src", "/assets/answer-selected.png");
     });
   })
 }
@@ -159,12 +186,10 @@ function setCardState() {
     readTextFile("/json/data.json", function (text) {
       questions = JSON.parse(text)[0].questions;
       questions.shuffleArray();
-      console.log(questions);
       buildCardView(questions[0], true);
     })
   }
   else if (questions.length > 0){
-    console.log(questions[0]);
     console.log(questions.length);
     buildCardView(questions[0]);
   } else {
@@ -178,6 +203,17 @@ function setGameOver() {
 
   $.get("/templates/game-over.html", function(template) {
     $("#main-content").empty().append(template);
+    currentUser = JSON.parse(localStorage.getItem("appUser"));
+    currentUser.inProgress = false;
+    if (!currentUser.highScore || currentUser.highScore < currentUser.currentScore) currentUser.highScore = currentUser.currentScore;
+    updateStorage();
+    $(".score").append('<p> Current: ' + currentUser.currentScore + "/" + answeredQuestions.length + '</p>');
+    $(".score").append('<p> Best: ' + currentUser.highScore + "/" + answeredQuestions.length + '</p>');
+    $(".avatar").attr("src", currentUser.avatar);
+    if (!currentUser.name) {
+      $(".no-name").removeClass("hidden");
+      // TODO: hide current user name black
+    }
     console.log(answeredQuestions);
     answeredQuestions.forEach(function (card, i) {
       $("#recap").append('<div class="row"><div id="card-'+ i +'" class="col-md-8 col-md-offset-2 separator"></div></div>')
@@ -199,8 +235,11 @@ function setGameOver() {
 
 $(function() {
 
-    if (!localStorage.getItem('user')) {
+    if (!localStorage.getItem('appUser')) {
       newUserState();
+    }
+    else {
+      prevUserState();
     }
 
 });
