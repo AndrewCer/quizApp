@@ -20,6 +20,10 @@ p {
 .jumbotron {
   background-color: #fff;
 }
+.jumbotron-cards .jumbotron {
+  padding-top: 0;
+  padding-bottom: 0;
+}
 .overlay {
   position: absolute;
   z-index: 1;
