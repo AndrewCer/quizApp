@@ -5,7 +5,7 @@ p {
   font-family: 'Luckiest Guy', cursive;
   font-size: 30px;
 }
-#questions > div {
+.card {
   margin-bottom: 1%;
 }
 .caption {
@@ -21,6 +21,10 @@ p {
   position: absolute;
   z-index: 1;
   display: none;
+}
+.separator {
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 10px;
 }
 /*.animate-card .jumbotron {
   padding-top: 0px;

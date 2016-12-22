@@ -1,11 +1,11 @@
-// TODO: create an array of outro animations for the cards
 //animation values
 var bounceInfinite = "animated infinite bounce";
 var fadeOutDown = "animated fadeOutDown";
 var bounceOut = "animated bounceOut";
 var bounceIn = "animated bounceIn";
-var zoomInDown = "animated zoomInDown";
 var rollOut = "animated rollOut";
+var zoomInDown = "animated zoomInDown";
+var zoomOut = "animated zoomOut";
 //game variables
 var questions = null;
 var answeredQuestions = [];
@@ -21,6 +21,7 @@ var user = function () {
 
 //#region Helper Functions
 function readTextFile(file, callback) {
+
     var rawFile = new XMLHttpRequest();
     rawFile.overrideMimeType("application/json");
     rawFile.open("GET", file, true);
@@ -33,6 +34,7 @@ function readTextFile(file, callback) {
 }
 
 Array.prototype.shuffleArray = function() {
+
   var array = this;
 
   var i = 0
@@ -47,14 +49,16 @@ Array.prototype.shuffleArray = function() {
   }
   // return array;
 }
-//#endregion
 
 function animateIn() {
   $(".animate-in-out").addClass(bounceIn);
 }
+//#endregion
+
 
 //#region New User
 function newUserState() {
+
   $.get("/templates/welcome.html", function (data) {
       $("#main-content").empty().append(data);
       animateIn();
@@ -87,12 +91,12 @@ function newUserState() {
 //#endregion
 
 //#region Main game
-
 function buildCardView(data, newGame) {
+
   $.get("/templates/game.html", function(template) {
     var selected = null;
     $("#main-content").empty().append(template);
-    // TODO: flesh out with animateIn isn't working
+    // TODO: figure out why animateIn isn't working
     // if (newGame) animateIn();
     $("#question").html(data.question);
     data.answers.forEach(function (q) {
@@ -108,6 +112,11 @@ function buildCardView(data, newGame) {
       $(".card").css("pointer-events", "none");
       selected = $(".card").index(this);
       data.answered = data.answers[selected];
+      data.answered.selectedIndex = selected;
+      // NOTE: calculating correct answer up front to reduce heavier calculation at setGameOver();
+      data.answers.forEach(function (a, i) {
+        if (a.score === 1) data.answered.correctIndex = i;
+      })
       answeredQuestions.push(data);
       questions.splice(0, 1);
       var overlay = $(".overlay");
@@ -127,10 +136,9 @@ function buildCardView(data, newGame) {
       else {
         overlay.children().attr("src", "/assets/incorrect-tilt.png")
         overlay.css("display", "block").addClass(zoomInDown).one("animationend", function () {
-          // TODO: animate-card slide out
           // TODO: $('#main-content').empty() and then run code again
           // $(".animate-in-out").addClass(rollOut).one("animationend", function () {
-          $(".animate-in-out").addClass("animated zoomOut").one("animationend", function () {
+          $(".animate-in-out").addClass(zoomOut).one("animationend", function () {
             setTimeout(function () {
               $('#main-content').empty();
               setCardState();
@@ -160,8 +168,6 @@ function setCardState() {
     console.log(questions.length);
     buildCardView(questions[0]);
   } else {
-    // TODO: setup game over screen function
-    console.log('its empty');
     setGameOver()
   }
 
@@ -169,15 +175,22 @@ function setCardState() {
 }
 
 function setGameOver() {
-  console.log('running game over');
-  // TODO: load game over template
+
   $.get("/templates/game-over.html", function(template) {
     $("#main-content").empty().append(template);
     console.log(answeredQuestions);
-    answeredQuestions.forEach(function (card) {
-      $("#recap").append('')
-      card.answers.forEach(function (q) {
-        $("#questions").append('<div class="card text-center col-md-6 col-md-offset-3" role="button"><img class="img-responsive" src="assets/answer-unselected.png" alt="answer not selected background"><div class="caption"><p>' + q.answer + '</p></div></div>');
+    answeredQuestions.forEach(function (card, i) {
+      $("#recap").append('<div class="row"><div id="card-'+ i +'" class="col-md-8 col-md-offset-2 separator"></div></div>')
+      $("#card-" + i).append('<h1>' + card.question + '</h1>')
+      card.answers.forEach(function (q, qIndex) {
+        var answerImg = '<img class="img-responsive" src="assets/answer-unselected.png" alt="answer not selected image">';
+        if (q.score === 1) {
+          answerImg = '<img class="img-responsive" src="assets/answer-selected.png" alt="answer selected background">';
+        }
+        else if (q.score === 0 && card.answered.selectedIndex === qIndex) {
+          answerImg = '<img class="img-responsive" src="assets/answer-incorrect.png" alt="answer selected background">';
+        }
+        $("#card-" + i).append('<div class="card text-center col-md-6 col-md-offset-3">' + answerImg +'<div class="caption"><p>' + q.answer + '</p></div></div>');
       })
     })
   });
