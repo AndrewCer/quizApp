@@ -1,11 +1,18 @@
 <div class="animate-in-out">
   <div class="jumbotron">
     <h1>QuiZapp</h1>
-    <img class="avatar" src="assets/user1.png" alt="user avatar icon">
-    <h2>Welcome Back!</h2>
-    <h2>if currentUser.name put it here</h2>
+    <img class="avatar" role="button" src="assets/user1.png" alt="user avatar icon">
+    <h2>Welcome Back<span id="user-name" class="hidden"></span>!</h2>
+    <div class="row">
+      <button type="button" class="btn btn-lg btn-success" id="new-game">New Game</button>
+    </div>
+    <div class="row hidden" id="resume-game">
+      <button type="button" class="btn btn-lg btn-warning">Resume</button>
+    </div>
+    <div class="row hidden" id="recap">
+      <button type="button" class="btn btn-lg btn-info">Recap</button>
+    </div>
   </div>
   <div class="row">
-    <h1>3 buttons 1. pick up where you left off (if currentUser.inProgress is true), Play new game, Last game recap</h1>
   </div>
 </div>

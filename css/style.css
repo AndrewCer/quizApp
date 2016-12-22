@@ -5,6 +5,9 @@ p {
   font-family: 'Luckiest Guy', cursive;
   font-size: 30px;
 }
+.btn {
+  margin-bottom: 10px;
+}
 .card {
   margin-bottom: 1%;
 }

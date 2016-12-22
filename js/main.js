@@ -62,6 +62,12 @@ function animateIn() {
 function updateStorage() {
   localStorage.setItem("appUser", JSON.stringify(currentUser));
 }
+
+function clearUserState() {
+  currentUser.currentScore = 0;
+  currentUser.questions = [];
+  currentUser.answeredQuestions = [];
+}
 //#endregion
 
 
@@ -110,6 +116,29 @@ function prevUserState() {
   console.log(currentUser);
   $.get("/templates/home.html", function (template) {
     $("#main-content").empty().append(template);
+    var avatar = $(".avatar");
+    avatar.attr("src", currentUser.avatar);
+    $("#new-game").on("click", function () {
+      console.log('should clear state here');
+      clearUserState();
+      setCardState();
+    });
+    if (currentUser.name) $("#user-name").removeClass("hidden");
+    if (currentUser.questions.length) {
+      $("#resume-game").removeClass("hidden");
+      // resumeDiv.child().on("click", function () {
+        // console.log('child clicked!!');
+      // })
+    }
+    if (!currentUser.inProgress) {
+      $("#recap").removeClass("hidden");
+      setTimeout(function () {
+        avatar.addClass("animated swing")
+      }, 5000);
+      avatar.on("click", function () {
+        setGameOver();
+      })
+    }
     animateIn();
 
   })
