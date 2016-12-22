@@ -110,12 +110,11 @@ function buildCardView(data, newGame) {
       data.answered = data.answers[selected];
       answeredQuestions.push(data);
       questions.splice(0, 1);
+      var overlay = $(".overlay");
       if (data.answered.score) {
-        console.log('correct');
         score += data.answered.score;
-        console.log(data.answered);
-        $(".overlay").children().attr("src", "/assets/correct-tilt.png");
-        $(".overlay").css("display", "block").addClass(zoomInDown).one("animationend", function () {
+        overlay.children().attr("src", "/assets/correct-tilt.png");
+        overlay.css("display", "block").addClass(zoomInDown).one("animationend", function () {
           $(".animate-in-out").addClass(rollOut).one("animationend", function () {
             setTimeout(function () {
               $('#main-content').empty();
@@ -126,12 +125,12 @@ function buildCardView(data, newGame) {
 
       }
       else {
-        console.log("incorrect");
-        $(".overlay").children().attr("src", "/assets/incorrect-tilt.png")
-        $(".overlay").css("display", "block").addClass(zoomInDown).one("animationend", function () {
+        overlay.children().attr("src", "/assets/incorrect-tilt.png")
+        overlay.css("display", "block").addClass(zoomInDown).one("animationend", function () {
           // TODO: animate-card slide out
           // TODO: $('#main-content').empty() and then run code again
-          $(".animate-in-out").addClass(rollOut).one("animationend", function () {
+          // $(".animate-in-out").addClass(rollOut).one("animationend", function () {
+          $(".animate-in-out").addClass("animated zoomOut").one("animationend", function () {
             setTimeout(function () {
               $('#main-content').empty();
               setCardState();
@@ -152,6 +151,7 @@ function setCardState() {
     readTextFile("/json/data.json", function (text) {
       questions = JSON.parse(text)[0].questions;
       questions.shuffleArray();
+      console.log(questions);
       buildCardView(questions[0], true);
     })
   }
@@ -162,9 +162,25 @@ function setCardState() {
   } else {
     // TODO: setup game over screen function
     console.log('its empty');
+    setGameOver()
   }
 
 
+}
+
+function setGameOver() {
+  console.log('running game over');
+  // TODO: load game over template
+  $.get("/templates/game-over.html", function(template) {
+    $("#main-content").empty().append(template);
+    console.log(answeredQuestions);
+    answeredQuestions.forEach(function (card) {
+      $("#recap").append('')
+      card.answers.forEach(function (q) {
+        $("#questions").append('<div class="card text-center col-md-6 col-md-offset-3" role="button"><img class="img-responsive" src="assets/answer-unselected.png" alt="answer not selected background"><div class="caption"><p>' + q.answer + '</p></div></div>');
+      })
+    })
+  });
 }
 //#endregion
 
