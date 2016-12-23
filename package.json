@@ -1,6 +1,7 @@
 {
   "name": "quizapp",
   "description": "A gamer quiz app",
+  "main": "app.js",
   "version": "1.0.0",
   "engines": {
     "node": "0.12.2"
