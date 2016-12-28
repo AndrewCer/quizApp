@@ -52,7 +52,6 @@ Array.prototype.shuffleArray = function() {
     array[i] = array[j]
     array[j] = temp
   }
-  // return array;
 }
 
 function animateIn() {
@@ -113,33 +112,33 @@ function newUserState() {
 //#region Previous User State
 function prevUserState() {
   currentUser = JSON.parse(localStorage.getItem("appUser"));
-  // TODO: check for currentUser.inProgress to see if the game is in progress and show "Continue" button
-  console.log(currentUser);
   $.get("/templates/home.html", function (template) {
     $("#main-content").empty().append(template);
     var avatar = $(".avatar");
     avatar.attr("src", currentUser.avatar);
     $("#new-game").on("click", function () {
-      console.log('should clear state here');
       clearUserState();
       setCardState();
     });
     if (currentUser.name) $("#user-name").removeClass("hidden");
     if (currentUser.questions.length) {
       $("#resume-game").removeClass("hidden");
-      // TODO: narrow this click down to just the button;
       $("#resume-game").on("click", function () {
         setCardState();
       })
     }
     if (!currentUser.inProgress) {
-      $("#recap").removeClass("hidden");
+      var recap = $("#recap");
+      recap.removeClass("hidden");
       setTimeout(function () {
         avatar.addClass("animated swing")
       }, 5000);
       avatar.on("click", function () {
         setGameOver();
-      })
+      });
+      recap.on("click", function () {
+        setGameOver();
+      });
     }
     animateIn();
 
@@ -212,7 +211,6 @@ function buildCardView(data, newGame) {
 }
 
 function setCardState() {
-  console.log(currentUser);
   if (currentUser.questions.length === 0 && currentUser.inProgress === false) {
     readTextFile("/json/data.json", function (text) {
       currentUser.questions = JSON.parse(text)[0].questions;
