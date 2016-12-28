@@ -235,6 +235,10 @@ function setGameOver() {
     currentUser.inProgress = false;
     if (!currentUser.highScore || currentUser.highScore < currentUser.currentScore) currentUser.highScore = currentUser.currentScore;
     updateStorage();
+    $("#new-game").on("click", function () {
+      clearUserState();
+      setCardState();
+    });
     $(".score").append('<p> Current: ' + currentUser.currentScore + "/" + currentUser.answeredQuestions.length + '</p>');
     $(".score").append('<p> Best: ' + currentUser.highScore + "/" + currentUser.answeredQuestions.length + '</p>');
     $(".avatar").attr("src", currentUser.avatar);
