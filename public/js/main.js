@@ -156,15 +156,18 @@ function buildCardView(data, newGame) {
     // if (newGame) animateIn();
     $("#question").html(data.question);
     data.answers.forEach(function (q) {
-      $("#questions").append('<div class="card text-center col-md-6 col-md-offset-3" role="button"><img class="img-responsive" src="assets/answer-unselected.png" alt="answer not selected background"><div class="caption"><p>' + q.answer + '</p></div></div>');
+      $("#questions").append('<div class="card text-center col-md-6 col-md-offset-3" role="button"><img class="img-responsive answer-card" src="assets/answer-unselected.png" alt="answer not selected background"><div class="caption"><p>' + q.answer + '</p></div></div>');
     })
-    // TODO: flesh out logic for hover. As it tends to selects different elements depending on where mouse is
-    // $(".card").hover(function (e) {
-    //   $(e.target).attr("src", "/assets/answer-selected.png");
-    // }, function (e) {
-    //   if (!selected) $(e.target).attr("src", "/assets/answer-unselected.png");
-    // });
+    $(".card").hover(function (e) {
+      var cardImg = $(this).closest(".card").children(".answer-card");
+      cardImg.attr("src", "/assets/answer-selected.png");
+    }, function (e) {
+      var cardImg = $(this).closest(".card").children(".answer-card");
+      if (!selected) cardImg.attr("src", "/assets/answer-unselected.png");
+    });
     $(".card").on("click", function (e) {
+      var cardImg = $(this).closest(".card").children(".answer-card");
+      $(this).unbind('mouseenter mouseleave');
       currentUser.inProgress = true;
       $(".card").css("pointer-events", "none");
       selected = $(".card").index(this);
@@ -179,7 +182,6 @@ function buildCardView(data, newGame) {
       var overlay = $(".overlay");
       if (data.answered.score) {
         currentUser.currentScore += data.answered.score;
-
         overlay.children().attr("src", "/assets/correct-tilt.png");
         overlay.css("display", "block").addClass(zoomInDown).one("animationend", function () {
           $(".animate-in-out").addClass(rollOut).one("animationend", function () {
@@ -192,6 +194,7 @@ function buildCardView(data, newGame) {
 
       }
       else {
+        cardImg.attr("src", "/assets/answer-incorrect.png");
         overlay.children().attr("src", "/assets/incorrect-tilt.png")
         overlay.css("display", "block").addClass(zoomInDown).one("animationend", function () {
           $(".animate-in-out").addClass(zoomOut).one("animationend", function () {
@@ -248,7 +251,7 @@ function setGameOver() {
     }
     currentUser.answeredQuestions.forEach(function (card, i) {
       $("#recap").append('<div class="row"><div id="card-'+ i +'" class="col-md-8 col-md-offset-2 separator"></div></div>')
-      $("#card-" + i).append('<h1>' + card.question + '</h1>')
+      $("#card-" + i).append('<h1 class="col-xs-6 col-xs-offset-3">' + card.question + '</h1>')
       card.answers.forEach(function (q, qIndex) {
         var answerImg = '<img class="img-responsive" src="assets/answer-unselected.png" alt="answer not selected image">';
         if (q.score === 1) {
@@ -257,7 +260,8 @@ function setGameOver() {
         else if (q.score === 0 && card.answered.selectedIndex === qIndex) {
           answerImg = '<img class="img-responsive" src="assets/answer-incorrect.png" alt="answer selected background">';
         }
-        $("#card-" + i).append('<div class="card text-center col-md-6 col-md-offset-3">' + answerImg +'<div class="caption"><p>' + q.answer + '</p></div></div>');
+        // $("#card-" + i).append('<div class="card text-center col-md-6 col-md-offset-3">' + answerImg +'<div class="caption"><p>' + q.answer + '</p></div></div>');
+        $("#card-" + i).append('<div class="card text-center col-xs-6 col-xs-offset-3">' + answerImg +'<div class="caption"><p>' + q.answer + '</p></div></div>');
       })
     })
   });
