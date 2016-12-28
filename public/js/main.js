@@ -180,6 +180,7 @@ function buildCardView(data, newGame) {
       currentUser.answeredQuestions.push(data);
       currentUser.questions.splice(0, 1);
       var overlay = $(".overlay");
+      if ($(window).width() < 1500) overlay.children().attr("class", "img-responsive");
       if (data.answered.score) {
         currentUser.currentScore += data.answered.score;
         overlay.children().attr("src", "/assets/correct-tilt.png");
@@ -205,8 +206,7 @@ function buildCardView(data, newGame) {
           });
         });
       }
-      // currentUser.questions = questions;
-      // currentUser.answeredQuestions = answeredQuestions;
+
       updateStorage();
 
     });
