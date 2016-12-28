@@ -1,8 +1,9 @@
 //animation values
-var bounceInfinite = "animated infinite bounce";
-var fadeOutDown = "animated fadeOutDown";
-var bounceOut = "animated bounceOut";
 var bounceIn = "animated bounceIn";
+var bounceInfinite = "animated infinite bounce";
+var bounceOut = "animated bounceOut";
+var fadeIn = "animated fadeIn";
+var fadeOutDown = "animated fadeOutDown";
 var rollOut = "animated rollOut";
 var zoomInDown = "animated zoomInDown";
 var zoomOut = "animated zoomOut";
@@ -23,6 +24,7 @@ var User = function () {
   this.questions = [];
   this.answeredQuestions = [];
 }
+
 
 //#region Helper Functions
 function readTextFile(file, callback) {
@@ -87,19 +89,12 @@ function newUserState() {
         var target = $(e.target);
         var imgSource = target.prop('src').split("/");
         currentUser.avatar = imgSource[imgSource.length - 2] + "/" + imgSource[imgSource.length - 1];
-        // TODO: perhaps remove below closestChild code
         var closestChild = target.closest("div").siblings().find("img");
         target.removeClass(bounceInfinite);
-        // closestChild.addClass(fadeOutDown);
-        // $('.ftt').addClass('hidden');
-        // $('.play-button').removeClass("hidden").on("click", function () {
-          $(".animate-in-out").addClass(bounceOut).one("animationend", function () {
-            setCardState();
-          });
-        // });
+        $(".animate-in-out").addClass(bounceOut).one("animationend", function () {
+          setCardState();
+        });
         closestChild.one("animationend", function () {
-          // TODO: center avatar after one fades away
-          // target.parent().attr("class", "").addClass("col-md-8");
           closestChild.removeClass(fadeOutDown).addClass("hidden");
         })
       })
@@ -152,8 +147,6 @@ function buildCardView(data, newGame) {
   $.get("/templates/game.html", function(template) {
     var selected = null;
     $("#main-content").empty().append(template);
-    // TODO: figure out why animateIn isn't working
-    // if (newGame) animateIn();
     $("#question").html(data.question);
     data.answers.forEach(function (q) {
       $("#questions").append('<div class="card text-center col-md-6 col-md-offset-3" role="button"><img class="img-responsive answer-card" src="assets/answer-unselected.png" alt="answer not selected background"><div class="caption"><p>' + q.answer + '</p></div></div>');
@@ -230,10 +223,32 @@ function setCardState() {
 
 }
 
+function buildBTT() {
+  var toTop = $("#to-top");
+  var scrollTrigger = 100;
+  $(window).on('scroll', function () {
+    var scrollTop = $(window).scrollTop();
+    if (scrollTop > scrollTrigger) {
+      toTop.removeClass("hidden");
+      toTop.addClass();
+    }
+    else {
+      toTop.addClass("hidden");
+    }
+  });
+  toTop.on("click", function (e) {
+    e.preventDefault();
+    $("html,body").animate({
+      scrollTop: 0
+    }, 700);
+  });
+}
+
 function setGameOver() {
 
   $.get("/templates/game-over.html", function(template) {
     $("#main-content").empty().append(template);
+    buildBTT();
     currentUser = JSON.parse(localStorage.getItem("appUser"));
     currentUser.inProgress = false;
     if (!currentUser.highScore || currentUser.highScore < currentUser.currentScore) currentUser.highScore = currentUser.currentScore;
@@ -245,10 +260,7 @@ function setGameOver() {
     $(".score").append('<p> Current: ' + currentUser.currentScore + "/" + currentUser.answeredQuestions.length + '</p>');
     $(".score").append('<p> Best: ' + currentUser.highScore + "/" + currentUser.answeredQuestions.length + '</p>');
     $(".avatar").attr("src", currentUser.avatar);
-    if (!currentUser.name) {
-      $(".no-name").removeClass("hidden");
-      // TODO: hide current user name black
-    }
+    if (!currentUser.name) $(".no-name").removeClass("hidden");
     currentUser.answeredQuestions.forEach(function (card, i) {
       $("#recap").append('<div class="row"><div id="card-'+ i +'" class="col-md-8 col-md-offset-2 separator"></div></div>')
       $("#card-" + i).append('<h1 class="col-xs-6 col-xs-offset-3">' + card.question + '</h1>')
@@ -260,7 +272,6 @@ function setGameOver() {
         else if (q.score === 0 && card.answered.selectedIndex === qIndex) {
           answerImg = '<img class="img-responsive" src="assets/answer-incorrect.png" alt="answer selected background">';
         }
-        // $("#card-" + i).append('<div class="card text-center col-md-6 col-md-offset-3">' + answerImg +'<div class="caption"><p>' + q.answer + '</p></div></div>');
         $("#card-" + i).append('<div class="card text-center col-xs-6 col-xs-offset-3">' + answerImg +'<div class="caption"><p>' + q.answer + '</p></div></div>');
       })
     })
@@ -278,6 +289,3 @@ $(function() {
     }
 
 });
-
-// TODO: once the user picks an avatar, create a user in local storage for them
-// localStorage.setItem('testObject', JSON.stringify(testObject));
