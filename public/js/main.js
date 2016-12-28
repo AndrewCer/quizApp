@@ -281,11 +281,7 @@ function setGameOver() {
 
 $(function() {
 
-    if (!localStorage.getItem('appUser')) {
-      newUserState();
-    }
-    else {
-      prevUserState();
-    }
+    if (!localStorage.getItem('appUser')) newUserState();
+    else prevUserState();
 
 });
